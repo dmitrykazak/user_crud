@@ -40,9 +40,13 @@ class IndexUserImportFormController extends AbstractController
             $csvFile = $form->get('importcsv')->getData();
 
             if ($csvFile) {
-                $count = $this->userImportService->import($csvFile->getPathname());
+                $result = $this->userImportService->import($csvFile->getPathname());
 
-                $this->addFlash('success', \sprintf('Successful imported user %d', $count));
+                $this->addFlash('success', \sprintf('Successful imported user %d', isset($result['success']) ? \count($result['success']) : 0));
+
+                if (isset($result['error'])) {
+                    $this->addFlash('warning', \sprintf('Error import user %d', isset($result['error']) ? \count($result['error']) :  0));
+                }
             }
 
             return $this->redirectToRoute('admin');

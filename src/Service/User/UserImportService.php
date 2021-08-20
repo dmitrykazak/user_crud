@@ -18,20 +18,28 @@ final class UserImportService
         $this->userFactory = $userFactory;
     }
 
-    public function import(string $path): int
+    public function import(string $path): array
     {
         $reader = Reader::createFromPath($path);
 
+        $reader->setHeaderOffset(0);
         $records = $reader->getRecords(self::HEADER);
+
+        $result = [];
         foreach ($records as $offset => $record) {
-            $this->userFactory->create(
-                $record['username'],
-                $record['email'],
-                $record['firstname'],
-                $record['lastname']
-            );
+            try {
+                $this->userFactory->create(
+                    $record['username'],
+                    $record['email'],
+                    $record['firstname'],
+                    $record['lastname']
+                );
+                $result['success'] = $record;
+            } catch (\Exception $exception) {
+                $result['error'] = $record;
+            }
         }
 
-        return $reader->count();
+        return $result;
     }
 }
