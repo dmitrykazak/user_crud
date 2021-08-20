@@ -5,20 +5,25 @@ declare(strict_types=1);
 namespace App\Factory\User;
 
 use App\Entity\User;
+use App\Message\CreateUserMessage;
 use App\Repository\UserRepositoryInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class UserFactory
 {
     private UserPasswordHasherInterface $userPasswordHasher;
     private UserRepositoryInterface $userRepository;
+    private MessageBusInterface $messageBus;
 
     public function __construct(
         UserRepositoryInterface $userRepository,
-        UserPasswordHasherInterface $userPasswordHasher
+        UserPasswordHasherInterface $userPasswordHasher,
+        MessageBusInterface $messageBus
     ) {
         $this->userPasswordHasher = $userPasswordHasher;
         $this->userRepository = $userRepository;
+        $this->messageBus = $messageBus;
     }
 
     public function create(
@@ -38,5 +43,7 @@ final class UserFactory
         $user->setPassword($password);
 
         $this->userRepository->save($user);
+
+        $this->messageBus->dispatch(new CreateUserMessage($user->getId(), $password));
     }
 }

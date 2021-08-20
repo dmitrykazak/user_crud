@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -27,22 +28,28 @@ class IndexUserImportFormController extends AbstractController
         $this->adminUrlGenerator = $adminUrlGenerator;
     }
 
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): Response
     {
         $user = new User();
 
         $form = $this->createForm(UserImportType::class, $user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
             /** @var UploadedFile $csvFile */
             $csvFile = $form->get('importcsv')->getData();
 
             if ($csvFile) {
-                $this->userImportService->import($csvFile->getPath());
+                $count = $this->userImportService->import($csvFile->getPathname());
+
+                $this->addFlash('success', \sprintf('Successful imported user %d', $count));
             }
+
+            return $this->redirectToRoute('admin');
         }
 
-        return $this->redirectToRoute('admin');
+        return $this->render('admin/user/import.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }

@@ -18,7 +18,7 @@ final class UserImportService
         $this->userFactory = $userFactory;
     }
 
-    public function import(string $path): void
+    public function import(string $path): int
     {
         $reader = Reader::createFromPath($path);
 
@@ -31,5 +31,7 @@ final class UserImportService
                 $record['lastname']
             );
         }
+
+        return $reader->count();
     }
 }

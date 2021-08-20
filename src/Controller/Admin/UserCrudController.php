@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Entity\User;
@@ -7,7 +9,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use Symfony\Component\HttpFoundation\Request;
 
 final class UserCrudController extends AbstractCrudController
 {
@@ -20,7 +21,7 @@ final class UserCrudController extends AbstractCrudController
     {
         $import = Action::new('import', 'actions.import')
             ->setIcon('fa fa-download')
-            ->linkToCrudAction('import')
+            ->linkToRoute('admin_user_import')
             ->setCssClass('btn')
             ->createAsGlobalAction();
 
@@ -37,10 +38,5 @@ final class UserCrudController extends AbstractCrudController
             'firstname',
             'lastname',
         ];
-    }
-
-    public function import(Request $request)
-    {
-
     }
 }

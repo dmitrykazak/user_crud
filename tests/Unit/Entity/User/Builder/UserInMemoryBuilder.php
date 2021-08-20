@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Entity\User\Builder;
 
+use App\Tests\Unit\Entity\User\UserInMemory;
+
 final class UserInMemoryBuilder
 {
     private int $id;
@@ -93,5 +95,10 @@ final class UserInMemoryBuilder
         $this->password = $password;
 
         return $this;
+    }
+
+    public function build(): UserInMemory
+    {
+        return new UserInMemory($this);
     }
 }

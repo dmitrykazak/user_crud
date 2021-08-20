@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Exception\UserNotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -35,5 +36,23 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
     {
         $this->_em->persist($user);
         $this->_em->flush();
+    }
+
+    public function getById(int $id): User
+    {
+        $qb = $this->createQueryBuilder('u');
+        $expr = $qb->expr();
+
+        $user = $qb
+            ->andWhere($expr->eq('u.id', ':id'))
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if (!$user instanceof User) {
+            throw new UserNotFoundException();
+        }
+
+        return $user;
     }
 }
