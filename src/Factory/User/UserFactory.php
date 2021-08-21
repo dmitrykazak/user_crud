@@ -10,7 +10,7 @@ use App\Repository\UserRepositoryInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-final class UserFactory
+class UserFactory
 {
     private UserPasswordHasherInterface $userPasswordHasher;
     private UserRepositoryInterface $userRepository;

@@ -11,10 +11,7 @@ use App\Entity\User;
 
 final class UserFixture extends Fixture
 {
-    /**
-     * @var UserPasswordHasherInterface
-     */
-    private $userPasswordHasher;
+    private UserPasswordHasherInterface $userPasswordHasher;
 
     public function __construct(UserPasswordHasherInterface $userPasswordHasher)
     {

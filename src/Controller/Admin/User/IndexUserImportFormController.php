@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/admin/user/import", name="admin_user_import")
  */
-class IndexUserImportFormController extends AbstractController
+final class IndexUserImportFormController extends AbstractController
 {
     private UserImportService $userImportService;
     private AdminUrlGenerator $adminUrlGenerator;
